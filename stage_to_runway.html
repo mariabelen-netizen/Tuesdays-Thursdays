@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 7 · From Stage to Runway · Nota20</title>
+<style>
+:root{
+  --cream:#FBF3E2; --card:#FFFCF3; --ink:#252438; --muted:#4F4C66;
+  --indigo:#210D80; --orange:#FF5C00; --orangeText:#B54100;
+  --lilac:#EEECF9; --border:#DDDFE7; --green:#1E6B45;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial, Helvetica, sans-serif;font-size:22px;line-height:1.45}
+em,i{font-style:normal} a{color:var(--indigo);text-decoration:none;font-weight:bold}
+button{font-family:Arial, Helvetica, sans-serif;font-size:20px;cursor:pointer}
+header{display:flex;align-items:center;gap:14px;padding:8px 28px 0}
+header img{width:40px;height:36px;display:block}
+.brand small{display:block;font-size:14px;color:var(--muted);font-weight:bold}
+.brand b{font-size:20px;color:var(--indigo)}
+main{max-width:1220px;margin:0 auto;padding:2px 28px 84px}
+.screen{display:none}
+.screen.on{display:block}
+.label{font-size:16px;font-weight:bold;color:var(--orangeText);margin:6px 0 2px}
+h2{font-size:30px;color:var(--indigo);margin:0 0 8px;line-height:1.2}
+h3{font-size:24px;color:var(--indigo);margin:0 0 8px}
+.card{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:14px 20px;margin:0 0 12px}
+.card.lilac{background:var(--lilac);border-color:var(--lilac)}
+.card.dark{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.card.dark h3{color:#fff}
+.big{font-size:28px;font-weight:bold;color:var(--indigo)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cols.l{grid-template-columns:5fr 6fr}
+.btn{background:var(--indigo);color:#fff;border:0;border-radius:12px;padding:10px 18px;font-weight:bold}
+.btn.ghost{background:#fff;color:var(--indigo);border:2px solid var(--indigo)}
+.btn.small{font-size:17px;padding:6px 12px}
+.screen .board .card p{font-size:20px}
+.btn.orange{background:var(--orangeText)}
+.btn:focus-visible,.chip:focus-visible,.dot:focus-visible{outline:4px solid var(--orange);outline-offset:2px}
+.help{display:none;margin-top:10px;background:var(--lilac);border-radius:12px;padding:10px 14px}
+.help.on{display:block}
+.hint-tag{display:inline-block;background:#fff;border:2px solid var(--indigo);color:var(--indigo);border-radius:10px;padding:1px 10px;font-size:18px;font-weight:bold;margin-left:4px}
+.step{display:none}
+.step.on{display:block}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start}
+.q{background:#fff;border:2px solid var(--border);border-radius:14px;padding:10px 14px;font-size:20px}
+.q .n{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--indigo);color:#fff;align-items:center;justify-content:center;font-weight:bold;margin-right:8px}
+ol.steps{margin:0;padding-left:30px} ol.steps li{margin:4px 0}
+.timer{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.clock{font-size:40px;font-weight:bold;color:var(--indigo);min-width:110px}
+.note{font-size:18px;color:var(--muted)}
+/* listening */
+.board{display:grid;grid-template-columns:3fr 1fr;gap:14px;align-items:start}
+.stmts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.stmts li{display:flex;gap:9px;align-items:flex-start;background:#fff;border:2px solid var(--border);border-radius:12px;padding:6px 10px;margin:0;font-size:19px;line-height:1.3}
+.stmts .L{flex:0 0 34px;height:34px;border-radius:9px;background:var(--indigo);color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center}
+.stmts .used{display:block;font-size:15px;font-weight:bold;color:var(--green)}
+.stmts li.isused{border-color:var(--green)}
+.spkrow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.spk{background:#fff;border:2px solid var(--border);border-radius:12px;padding:7px 8px}
+.spk.playing{border-color:var(--orange);border-width:3px}
+.spk .name{font-weight:bold;color:var(--indigo);font-size:17px;line-height:1.25}
+.spk .city{display:block;font-weight:normal;color:var(--ink)}
+.spk .btn{width:100%;margin:5px 0 2px}
+.spk .qn{font-size:16px;color:var(--muted)}
+.spk .now{font-size:16px;font-weight:bold;color:var(--orangeText)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;align-items:center}
+.chips.letters{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.chip{min-width:31px;height:34px;border-radius:9px;border:2px solid var(--indigo);background:#fff;color:var(--indigo);font-weight:bold;font-size:19px;padding:0 8px}
+.chip.sel{background:var(--indigo);color:#fff}
+.chip.conf{font-size:14px;border-color:var(--muted);color:var(--ink);height:32px;padding:0 5px;min-width:0}
+.chip.conf.sel{background:var(--ink);color:#fff}
+.ans{font-size:16px;font-weight:bold;color:var(--green)}
+.warn{display:block;font-size:15px;color:var(--orangeText);font-weight:bold}
+.ctrls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.vbox{position:relative;width:100%;min-width:200px;max-width:356px;height:200px;border-radius:12px;overflow:hidden;background:#1d1a3a}
+.vbox .cover{position:absolute;inset:0;background:var(--indigo);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:bold;font-size:22px;padding:10px}
+.vbox .cover small{font-size:16px;font-weight:normal;margin-top:4px}
+.vbox .cover.off{display:none}
+#ytMsg{font-size:17px;color:#fff;padding:12px}
+.status{font-weight:bold;color:var(--orangeText);font-size:17px;min-height:24px;margin-top:4px}
+.round{display:flex;gap:8px;align-items:center;font-size:18px}
+.tsetup{margin-top:18px;border:2px dashed var(--border);border-radius:14px;padding:10px 16px;background:#fff}
+.tsetup summary{cursor:pointer;font-weight:bold;color:var(--muted);font-size:17px;list-style:none}
+.tsetup input{font-family:Arial, Helvetica, sans-serif;font-size:17px;padding:5px 8px;border:2px solid var(--border);border-radius:8px}
+.tsetup table{border-collapse:collapse;font-size:16px;margin-top:8px}
+.tsetup td{padding:3px 8px}
+.tsetup .w{width:520px;max-width:100%}
+.tsetup .t{width:70px}
+.feel{display:flex;gap:10px;flex-wrap:wrap}
+input.city{font-family:Arial, Helvetica, sans-serif;font-size:22px;padding:8px 12px;border:2px solid var(--border);border-radius:10px;width:320px;max-width:100%}
+/* nav */
+nav.bar{position:fixed;left:0;right:0;bottom:0;background:var(--cream);border-top:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:7px 28px}
+.dots{display:flex;gap:10px;align-items:center}
+.dot{width:40px;height:40px;border-radius:50%;border:2px solid var(--indigo);background:#fff;color:var(--indigo);font-weight:bold;font-size:18px}
+.dot.on{background:var(--indigo);color:#fff}
+.dotname{font-size:17px;font-weight:bold;color:var(--indigo);margin-left:6px}
+.navbtns{display:flex;gap:10px}
+.fact{border-left:6px solid var(--orange)}
+@media (max-width:900px){.cols,.cols.l,.qgrid,.board,.stmts{grid-template-columns:1fr}.spkrow{grid-template-columns:1fr 1fr}}
+.citylist{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:0 0 12px}
+.city{background:#fff;border:2px solid var(--border);border-radius:14px;padding:12px;font-weight:bold;color:var(--indigo);font-size:23px;display:flex;gap:10px;align-items:center}
+.city .n{flex:0 0 34px;height:34px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px}
+.spktabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tab{border:2px solid var(--indigo);background:#fff;color:var(--indigo);border-radius:10px;padding:5px 12px;font-weight:bold;font-size:18px}
+.tab.sel{background:var(--indigo);color:#fff}
+.qcard .who{font-size:17px;color:var(--muted);font-weight:bold;margin:0 0 2px}
+.qtext{font-size:28px;margin:0 0 10px}
+.opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:#fff;border:2px solid var(--border);border-radius:14px;padding:11px 14px;margin:0 0 8px;font-size:23px;line-height:1.3;color:var(--ink);cursor:pointer;font-family:Arial,Helvetica,sans-serif}
+.opt .L{flex:0 0 38px;height:38px;border-radius:10px;background:var(--indigo);color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center}
+.opt.sel{border-color:var(--indigo);border-width:3px;background:var(--lilac)}
+.opt .pick{margin-left:auto;font-size:16px;font-weight:bold;color:var(--indigo);white-space:nowrap}
+.opt b{color:var(--indigo)}
+.opt:focus-visible{outline:4px solid var(--orange);outline-offset:2px}
+.pnav{display:flex;justify-content:space-between;gap:10px}
+#said{font-size:21px}
+.qcard .chip.conf{font-size:17px;height:36px;padding:0 12px}
+@media (max-width:900px){.citylist{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <img src="data:image/png;base64,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" alt="Nota20 logo">
+  <div class="brand"><small>Lesson 7</small><b>From Stage to Runway</b></div>
+</header>
+
+<main>
+
+<!-- 1 WARM-UP -->
+<section class="screen" data-m="1" data-name="Warm-up">
+  <div class="label">1 · Warm-up</div>
+  <h2>Last time on stage…</h2>
+  <div class="card">
+    <p class="big" style="margin:0 0 6px">Tell me the story of The Wrong Backpack.</p>
+    <p style="margin:0">Don't look at anything!</p>
+  </div>
+  <div class="card lilac" id="wq">
+    <div class="step on"><h3>Who was in the story?</h3></div>
+    <div class="step"><h3>Where were they going?</h3></div>
+    <div class="step"><h3>What was the problem?</h3></div>
+    <div class="step"><h3>And how does your ending start?</h3></div>
+  </div>
+  <button class="btn" id="wqNext">Next question</button>
+  <button class="btn ghost" data-help="h1">Need a clue?</button>
+  <div class="help" id="h1">coach · science museum · black backpack · note · box</div>
+</section>
+
+<!-- 2 REHEARSAL -->
+<section class="screen" data-m="2" data-name="Rehearsal">
+  <div class="label">2 · Rehearsal</div>
+  <h2>Writer's check</h2>
+  <p style="margin:0 0 10px">You're the writer. Check your ending before the show.</p>
+  <div class="cols l">
+    <div>
+      <div class="card">
+        <ol class="steps">
+          <li>Get your ending ready: on paper or on the computer.
+            <div class="note">No ending yet? Tell it to me first. Then write 3 or 4 lines.</div></li>
+          <li>Underline every verb.</li>
+          <li>For each verb, ask the four questions.</li>
+        </ol>
+        <p class="note" style="margin:10px 0 0">Past and future verbs? Not today. Leave them.</p>
+      </div>
+      <div class="card lilac">
+        <h3>Backstage timer</h3>
+        <div class="timer">
+          <div class="clock" id="clock" aria-live="polite">0:00</div>
+          <button class="btn" data-min="3">3 min</button>
+          <button class="btn" data-min="5">5 min</button>
+          <button class="btn ghost" id="tStop">Stop</button>
+        </div>
+        <div class="status" id="tMsg"></div>
+      </div>
+    </div>
+    <div>
+    <div class="qgrid">
+      <div class="q"><span class="n">1</span><b>Is it a stage direction?</b><br>(what the actor does)
+        <div><button class="btn small ghost" data-help="e1">Example</button></div>
+        <div class="help" id="e1">She opens the box.<br>He looks at Mia.<br><span class="hint-tag">he / she + verb + s</span></div></div>
+      <div class="q"><span class="n">2</span><b>Is the character talking about now or this week?</b>
+        <div><button class="btn small ghost" data-help="e2">Example</button></div>
+        <div class="help" id="e2">I'm looking for my bag.<br>We're planning a surprise.<br><span class="hint-tag">am / is / are + -ing</span></div></div>
+      <div class="q"><span class="n">3</span><b>Is it a habit?</b><br>(every day, usually, always)
+        <div><button class="btn small ghost" data-help="e3">Example</button></div>
+        <div class="help" id="e3">She always sits by the window.<br><span class="hint-tag">present simple</span></div></div>
+      <div class="q"><span class="n">4</span><b>Is it a feeling or a thought?</b><br>(know, want, need, like)
+        <div><button class="btn small ghost" data-help="e4">Example</button></div>
+        <div class="help" id="e4">I know! (not: I'm knowing)<br><span class="hint-tag">no -ing</span></div></div>
+    </div>
+    <p class="note" style="margin:10px 0 0">When you're ready: tell me one change you made. Only if you want.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 SHOWTIME -->
+<section class="screen" data-m="3" data-name="Showtime">
+  <div class="label">3 · Showtime</div>
+  <h2>It's showtime!</h2>
+  <div class="card dark">
+    <p class="big" style="color:#fff;margin:0 0 6px">Perform your ending.</p>
+    <p style="margin:0">You can play all the characters. Use different voices!</p>
+  </div>
+  <div class="card">
+    <h3>Audience notes</h3>
+    <p style="margin:0">Two stars and a wish, about your story:</p>
+    <p style="margin:8px 0 0">★ I loved…<br>★ It worked when…<br>✦ I want to know more about…</p>
+  </div>
+</section>
+
+<!-- 4a RUNWAY: INTRO -->
+<section class="screen" data-m="4" data-name="Runway">
+  <div class="label">4 · Runway</div>
+  <h2>Intermission: from the stage to the runway</h2>
+  <div class="card">
+    <p class="big" style="margin:0 0 6px">Five people dress in looks from five cities.</p>
+    <p style="margin:0">Listen to each person and choose the best answer: A, B or C.</p>
+  </div>
+  <div class="citylist">
+    <div class="city"><span class="n">1</span>Rome</div>
+    <div class="city"><span class="n">2</span>London</div>
+    <div class="city"><span class="n">3</span>Paris</div>
+    <div class="city"><span class="n">4</span>Miami</div>
+    <div class="city"><span class="n">5</span>Amsterdam</div>
+  </div>
+  <div class="card lilac">
+    <h3>Before you listen</h3>
+    <p style="margin:0">What do you think people wear in these cities?</p>
+    <p style="margin:8px 0 0">Listen for the idea. The words can be different.</p>
+  </div>
+
+  <details class="tsetup" id="tsetup">
+    <summary>Teacher setup (before class)</summary>
+    <p class="note" style="margin:8px 0 4px">Video link (YouTube):</p>
+    <input class="w" id="vidLink" placeholder="https://www.youtube.com/watch?v=…">
+    <table id="cutTable"></table>
+    <p style="margin:8px 0 0">
+      <button class="btn small" id="saveSetup">Save</button>
+      <button class="btn small ghost" id="resetSetup">Reset cuts</button>
+      <button class="btn small ghost" id="clearAns">Clear answers</button>
+      <span class="note" id="setupMsg"></span>
+    </p>
+  </details>
+</section>
+
+<!-- 4b RUNWAY: LISTEN, ONE PERSON AT A TIME -->
+<section class="screen" data-m="4" data-name="Runway">
+  <div class="label" style="font-size:18px;margin-bottom:6px">4 · Runway · Listen</div>
+  <div class="board">
+    <div>
+      <div class="spktabs" id="spkTabs"></div>
+      <div class="card qcard">
+        <p class="who" id="qWho"></p>
+        <h3 class="qtext" id="qText"></h3>
+        <div id="opts"></div>
+        <div class="chips" style="margin-top:8px">
+          <button class="chip conf" data-conf="sure" id="cSure">sure</button>
+          <button class="chip conf" data-conf="not sure" id="cNot">not sure</button>
+        </div>
+        <div style="margin-top:10px"><button class="btn small ghost" id="saidBtn">What she said</button></div>
+        <div class="help" id="said"></div>
+      </div>
+      <div class="pnav">
+        <button class="btn ghost small" id="prevSpk">◀ Previous person</button>
+        <button class="btn small" id="nextSpk">Next person ▶</button>
+      </div>
+    </div>
+    <div>
+      <div class="vbox">
+        <div id="yt"></div>
+        <div class="cover" id="cover">🎧 Just listen<small>The video comes at the end.</small></div>
+      </div>
+      <div class="ctrls">
+        <button class="btn" id="playBtn">▶ Listen</button>
+        <button class="btn small ghost" id="stopBtn">■ Stop</button>
+      </div>
+      <div class="status" id="ytStatus" aria-live="polite"></div>
+      <button class="btn small ghost" id="reveal">Show the video</button>
+    </div>
+  </div>
+</section>
+
+<!-- 5 CURTAIN -->
+<section class="screen" data-m="5" data-name="Curtain">
+  <div class="label">5 · Curtain</div>
+  <h2>Curtain</h2>
+  <div class="cols">
+    <div>
+      <div class="card">
+        <h3>My trick for verbs is…</h3>
+        <p style="margin:0">Say it in one sentence.</p>
+      </div>
+      <div class="card">
+        <h3>The listening felt…</h3>
+        <div class="feel">
+          <button class="chip" data-feel="easy" style="padding:0 16px">easy</button>
+          <button class="chip" data-feel="OK" style="padding:0 16px">OK</button>
+          <button class="chip" data-feel="hard" style="padding:0 16px">hard</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>School this week</h3>
+        <p style="margin:0">Any tests? What are you doing in English class?</p>
+      </div>
+    </div>
+    <div>
+      <div class="card dark">
+        <h3>Next class: the runway!</h3>
+        <p style="margin:0 0 10px">Which city will you dress for? Any city in the world.</p>
+        <input class="city" id="city" placeholder="My city:" aria-label="My city">
+        <p style="margin:10px 0 0;font-size:18px">Not homework. Just think about it, if you want.</p>
+      </div>
+      <button class="btn ghost" id="copyRes">Copy results (for the tutor)</button>
+      <div class="status" id="copyMsg"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="bar" aria-label="Lesson moments">
+  <div class="dots" id="dots"></div>
+  <div class="navbtns">
+    <button class="btn ghost" id="back">◀ Back</button>
+    <button class="btn" id="next">Next ▶</button>
+  </div>
+</nav>
+
+<script>
+(function(){
+"use strict";
+var KEY = "n20_lesson7_v2";
+var VIDEO_ID = "";
+var SPK = [
+  {city:"Rome", s:93, e:130, q:"What did she want to copy?",
+   o:["a look from <b>an old film</b>", "what <b>someone she met in Rome</b> was wearing", "a look from <b>her mum's photos</b>"],
+   said:"“Our tour guide in Rome… was wearing this super cute dress. So I… wanted to recreate that.”"},
+  {city:"London", s:163, e:194, q:"What does she say about her trench coat?",
+   o:["She <b>bought it</b> for her first trip to London.", "She <b>borrowed it</b> from a friend.", "She <b>doesn't like</b> how it looks."],
+   said:"“When I went to London for the first time… I have to go shopping… a khaki trench coat.”"},
+  {city:"Paris", s:223, e:265, q:"How does she feel about her Paris look?",
+   o:["<b>Unhappy</b>: she looks like a mime.", "<b>Bored</b>: jeans are too simple.", "<b>Surprised</b>: she likes it without colour."],
+   said:"“I liked it a lot… Maybe all the attention doesn't need to be there with color.”"},
+  {city:"Miami", s:266, e:309, q:"Why did she choose a pastel blue dress?",
+   o:["Pastel is <b>very popular</b> in Miami.", "It <b>matches her shoes</b>.", "The <b>colourful ones weren't available</b>."],
+   said:"“The dresses… brightly colored, they were all sold out. So I found… a pastel blue.”"},
+  {city:"Amsterdam", s:482, e:510, q:"Why did she choose Amsterdam?",
+   o:["An <b>actress she loves</b> has a connection with it.", "She <b>lived there</b> as a child.", "She <b>rides a bike</b> every day."],
+   said:"“I've never actually been to Amsterdam… Audrey Hepburn moved there when she was a teenager.”"}
+];
+var DEFAULT_CUTS = SPK.map(function(x){ return {s:x.s, e:x.e}; });
+var L3 = ["A", "B", "C"];
+
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+var st = load();
+st.ans = st.ans || {}; st.conf = st.conf || {}; st.plays = st.plays || {}; st.spk = st.spk || 0;
+var cuts = (st.cuts && st.cuts.length === SPK.length) ? st.cuts : JSON.parse(JSON.stringify(DEFAULT_CUTS));
+function vid(){ return st.vid || (VIDEO_ID.indexOf("__") === 0 ? "" : VIDEO_ID); }
+
+/* ---------- screens & nav ---------- */
+var screens = Array.prototype.slice.call(document.querySelectorAll(".screen"));
+var cur = Math.min(st.screen || 0, screens.length - 1), moments = [];
+screens.forEach(function(s, i){ var m = +s.dataset.m; if (!moments.some(function(x){ return x.m === m; })) moments.push({m:m, name:s.dataset.name, first:i}); });
+var dotsEl = document.getElementById("dots");
+moments.forEach(function(mo){
+  var b = document.createElement("button"); b.className = "dot"; b.textContent = mo.m; b.title = mo.name;
+  b.setAttribute("aria-label", mo.m + " " + mo.name);
+  b.addEventListener("click", function(){ go(mo.first); }); dotsEl.appendChild(b);
+});
+var dotName = document.createElement("span"); dotName.className = "dotname"; dotsEl.appendChild(dotName);
+function go(i){
+  cur = Math.max(0, Math.min(screens.length - 1, i));
+  screens.forEach(function(s, j){ s.classList.toggle("on", j === cur); });
+  var m = +screens[cur].dataset.m;
+  Array.prototype.forEach.call(dotsEl.querySelectorAll(".dot"), function(d){ d.classList.toggle("on", +d.textContent === m); });
+  dotName.textContent = screens[cur].dataset.name;
+  document.getElementById("back").disabled = cur === 0;
+  document.getElementById("next").disabled = cur === screens.length - 1;
+  st.screen = cur; save(); window.scrollTo(0, 0);
+}
+document.getElementById("back").onclick = function(){ go(cur - 1); };
+document.getElementById("next").onclick = function(){ go(cur + 1); };
+document.addEventListener("keydown", function(e){
+  var t = (e.target.tagName || "").toLowerCase(); if (t === "input" || t === "textarea") return;
+  if (e.key === "ArrowRight") go(cur + 1); if (e.key === "ArrowLeft") go(cur - 1);
+});
+
+/* ---------- helps (hidden until asked) ---------- */
+Array.prototype.forEach.call(document.querySelectorAll("[data-help]"), function(b){
+  b.setAttribute("aria-expanded", "false");
+  b.addEventListener("click", function(){ var h = document.getElementById(b.dataset.help); var on = h.classList.toggle("on"); b.setAttribute("aria-expanded", on ? "true" : "false"); });
+});
+
+/* ---------- warm-up questions, one at a time ---------- */
+var wsteps = document.querySelectorAll("#wq .step"), wi = 0;
+document.getElementById("wqNext").onclick = function(){
+  wi = (wi + 1) % wsteps.length;
+  Array.prototype.forEach.call(wsteps, function(s, j){ s.classList.toggle("on", j === wi); });
+};
+
+/* ---------- timer ---------- */
+var tInt = null, tLeft = 0, clock = document.getElementById("clock"), tMsg = document.getElementById("tMsg");
+function fmt(sec){ var m = Math.floor(sec / 60), s = sec % 60; return m + ":" + (s < 10 ? "0" : "") + s; }
+Array.prototype.forEach.call(document.querySelectorAll("[data-min]"), function(b){
+  b.addEventListener("click", function(){
+    if (tInt) clearInterval(tInt); tLeft = (+b.dataset.min) * 60; clock.textContent = fmt(tLeft); tMsg.textContent = "Your tutor is backstage.";
+    tInt = setInterval(function(){ tLeft--; clock.textContent = fmt(Math.max(tLeft, 0)); if (tLeft <= 0){ clearInterval(tInt); tInt = null; tMsg.textContent = "Time! Call your tutor."; } }, 1000);
+  });
+});
+document.getElementById("tStop").onclick = function(){ if (tInt) clearInterval(tInt); tInt = null; tMsg.textContent = ""; };
+
+/* ---------- listening: one person at a time ---------- */
+function renderTabs(){
+  var el = document.getElementById("spkTabs"); el.innerHTML = "";
+  SPK.forEach(function(x, i){
+    var b = document.createElement("button");
+    b.className = "tab" + (i === st.spk ? " sel" : "");
+    b.textContent = (i + 1) + " " + x.city + (st.ans[i] ? " ✓" : "");
+    b.onclick = function(){ setSpk(i); };
+    el.appendChild(b);
+  });
+}
+function renderQ(){
+  var i = st.spk, x = SPK[i];
+  document.getElementById("qWho").textContent = "Person " + (i + 1) + " of 5 · " + x.city;
+  document.getElementById("qText").textContent = x.q;
+  var h = "";
+  x.o.forEach(function(t, k){
+    var sel = st.ans[i] === L3[k];
+    h += '<button class="opt' + (sel ? " sel" : "") + '" data-o="' + L3[k] + '"><span class="L">' + L3[k] + '</span><span>' + t + '</span>' + (sel ? '<span class="pick">✓ my answer</span>' : "") + '</button>';
+  });
+  document.getElementById("opts").innerHTML = h;
+  ["sure", "not sure"].forEach(function(c){
+    var b = document.getElementById(c === "sure" ? "cSure" : "cNot");
+    var on = st.conf[i] === c; b.classList.toggle("sel", on); b.textContent = (on ? "✓ " : "") + c;
+  });
+  var said = document.getElementById("said"); said.classList.remove("on"); said.innerHTML = x.said;
+  document.getElementById("prevSpk").disabled = i === 0;
+  document.getElementById("nextSpk").disabled = i === SPK.length - 1;
+  updPlayBtn(); renderTabs();
+}
+function setSpk(i){ stopPlay(); st.spk = i; save(); renderQ(); setStatus(""); }
+document.getElementById("opts").addEventListener("click", function(e){
+  var b = e.target.closest("[data-o]"); if (!b) return;
+  var i = st.spk; st.ans[i] = (st.ans[i] === b.dataset.o) ? undefined : b.dataset.o; save(); renderQ();
+});
+Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(b){
+  b.addEventListener("click", function(){ var i = st.spk; st.conf[i] = (st.conf[i] === b.dataset.conf) ? undefined : b.dataset.conf; save(); renderQ(); });
+});
+document.getElementById("saidBtn").onclick = function(){ document.getElementById("said").classList.toggle("on"); };
+document.getElementById("prevSpk").onclick = function(){ setSpk(Math.max(0, st.spk - 1)); };
+document.getElementById("nextSpk").onclick = function(){ setSpk(Math.min(SPK.length - 1, st.spk + 1)); };
+
+/* ---------- YouTube player ---------- */
+var player = null, ready = false, poll = null, playing = false;
+var statusEl = document.getElementById("ytStatus");
+function setStatus(t){ statusEl.textContent = t; }
+function updPlayBtn(){
+  var n = st.plays[st.spk] || 0, b = document.getElementById("playBtn");
+  b.textContent = playing ? "Playing…" : (n === 0 ? "▶ Listen (1st time)" : n === 1 ? "▶ Listen (2nd time)" : "▶ Listen again");
+}
+function loadYT(){
+  if (!vid()){ document.getElementById("yt").innerHTML = '<div id="ytMsg">No video yet. Teacher: paste the link in "Teacher setup" (Runway, first screen).</div>'; return; }
+  if (player && ready) return;
+  if (window.YT && window.YT.Player){ makePlayer(); return; }
+  window.onYouTubeIframeAPIReady = makePlayer;
+  var s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api";
+  s.onerror = function(){ setStatus("The video player didn't load. Plan B: \"Teacher setup\" has a YouTube link for each person."); };
+  document.head.appendChild(s);
+}
+function makePlayer(){
+  document.getElementById("yt").innerHTML = "";
+  player = new YT.Player("yt", {
+    width: 356, height: 200, videoId: vid(),
+    playerVars: { rel: 0, playsinline: 1, controls: 1, modestbranding: 1 },
+    events: {
+      onReady: function(){ ready = true; setStatus(""); },
+      onError: function(){ setStatus("This video can't play here. Plan B: \"Teacher setup\" has a YouTube link for each person."); }
+    }
+  });
+}
+function stopPoll(){ if (poll){ clearInterval(poll); poll = null; } }
+function stopPlay(){ stopPoll(); if (playing){ try { player && player.pauseVideo(); } catch(e){} } playing = false; updPlayBtn(); }
+document.getElementById("playBtn").onclick = function(){
+  if (!vid()){ setStatus("Teacher: paste the video link in \"Teacher setup\"."); return; }
+  if (!player || !ready){ setStatus("The player is loading. Try again in a few seconds."); loadYT(); return; }
+  if (playing) return;
+  var i = st.spk, c = cuts[i];
+  stopPoll(); playing = true; updPlayBtn(); setStatus("");
+  player.loadVideoById({ videoId: vid(), startSeconds: c.s, endSeconds: c.e });
+  poll = setInterval(function(){
+    var t = 0, stt = -1; try { t = player.getCurrentTime(); stt = player.getPlayerState(); } catch(e){}
+    if (t >= c.e - 0.25 || stt === 0){
+      stopPoll(); try { player.pauseVideo(); } catch(e){}
+      playing = false; st.plays[i] = (st.plays[i] || 0) + 1; save(); updPlayBtn();
+      setStatus(st.plays[i] === 1 ? "Choose A, B or C. Then listen again." : "Done. How did you know?");
+    }
+  }, 250);
+};
+document.getElementById("stopBtn").onclick = function(){ stopPlay(); setStatus("Stopped."); };
+var cover = document.getElementById("cover"), revealBtn = document.getElementById("reveal");
+function renderCover(){ cover.classList.toggle("off", !!st.revealed); revealBtn.textContent = st.revealed ? "Hide the video" : "Show the video"; }
+revealBtn.onclick = function(){ st.revealed = !st.revealed; save(); renderCover(); };
+
+/* ---------- teacher setup ---------- */
+function parseId(u){
+  u = (u || "").trim(); if (!u) return "";
+  var m = u.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{11})/);
+  if (m) return m[1]; if (/^[A-Za-z0-9_-]{11}$/.test(u)) return u; return null;
+}
+function toSec(t){ var p = String(t).trim().split(":"); return p.length === 2 ? (+p[0]) * 60 + (+p[1]) : +p[0]; }
+function renderSetup(){
+  document.getElementById("vidLink").value = vid() ? "https://www.youtube.com/watch?v=" + vid() : "";
+  var tb = document.getElementById("cutTable"), h = "<tr><td></td><td>start</td><td>end</td><td>plan B</td></tr>";
+  SPK.forEach(function(x, i){
+    var lk = vid() ? '<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=' + vid() + '&t=' + cuts[i].s + 's">Open on YouTube at ' + fmt(cuts[i].s) + '</a>' : "";
+    h += "<tr><td>" + (i + 1) + " · " + x.city + '</td><td><input class="t" id="cs' + i + '" value="' + fmt(cuts[i].s) + '"></td><td><input class="t" id="ce' + i + '" value="' + fmt(cuts[i].e) + '"></td><td>' + lk + '</td></tr>';
+  });
+  tb.innerHTML = h;
+}
+document.getElementById("saveSetup").onclick = function(){
+  var id = parseId(document.getElementById("vidLink").value), msg = document.getElementById("setupMsg");
+  if (id === null){ msg.textContent = "That link doesn't look like a YouTube link."; return; }
+  var nc = [];
+  for (var i = 0; i < SPK.length; i++){
+    var s = toSec(document.getElementById("cs" + i).value), e = toSec(document.getElementById("ce" + i).value);
+    if (!(s >= 0) || !(e > s)){ msg.textContent = "Check the times for person " + (i + 1) + "."; return; }
+    nc.push({s:s, e:e});
+  }
+  var changed = (id || "") !== vid();
+  st.vid = id || ""; cuts = nc; st.cuts = nc; save(); msg.textContent = "Saved."; renderSetup();
+  if (changed){ if (player && ready && id){ try { player.cueVideoById(id); } catch(e){} } else { player = null; ready = false; loadYT(); } }
+};
+document.getElementById("resetSetup").onclick = function(){
+  cuts = JSON.parse(JSON.stringify(DEFAULT_CUTS)); delete st.cuts; save(); renderSetup();
+  document.getElementById("setupMsg").textContent = "Cuts reset.";
+};
+
+document.getElementById("clearAns").onclick = function(){
+  stopPlay(); st.ans = {}; st.conf = {}; st.plays = {}; st.spk = 0; st.revealed = false; delete st.feel; delete st.city; save();
+  renderQ(); renderCover(); renderFeel(); cityEl.value = ""; setStatus("");
+  document.getElementById("setupMsg").textContent = "Answers cleared. Ready for class.";
+};
+
+/* ---------- curtain ---------- */
+function renderFeel(){ Array.prototype.forEach.call(document.querySelectorAll("[data-feel]"), function(b){ b.classList.toggle("sel", st.feel === b.dataset.feel); }); }
+Array.prototype.forEach.call(document.querySelectorAll("[data-feel]"), function(b){
+  b.addEventListener("click", function(){ st.feel = (st.feel === b.dataset.feel) ? undefined : b.dataset.feel; save(); renderFeel(); });
+});
+var cityEl = document.getElementById("city"); cityEl.value = st.city || "";
+cityEl.addEventListener("input", function(){ st.city = cityEl.value; save(); });
+document.getElementById("copyRes").onclick = function(){
+  var lines = ["Lesson 7 · Listening (5 looks)"];
+  SPK.forEach(function(x, i){ lines.push((i + 1) + " " + x.city + ": " + (st.ans[i] || "-") + (st.conf[i] ? " (" + st.conf[i] + ")" : "") + " · heard " + (st.plays[i] || 0) + "x"); });
+  lines.push("Felt: " + (st.feel || "-")); lines.push("City for next class: " + (st.city || "-"));
+  var txt = lines.join("\n"), msg = document.getElementById("copyMsg");
+  function fb(){ var ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); msg.textContent = "Copied."; } catch(e){ msg.textContent = "Couldn't copy."; } document.body.removeChild(ta); }
+  if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){ msg.textContent = "Copied."; }, fb); } else fb();
+};
+
+/* ---------- start ---------- */
+renderQ(); renderCover(); renderSetup(); renderFeel(); go(cur); loadYT();
+})();
+</script>
+</body>
+</html>
